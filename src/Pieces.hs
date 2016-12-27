@@ -1,22 +1,30 @@
 module Pieces where
 
 
+type PShape = [String]
 data Piece = Piece { pCost :: Int
                    , pTime :: Int
                    , pReward :: Int
-                   , pShape :: [String] }
+                   , pShape :: PShape }
   deriving (Show)
 
 pCoverage :: Piece -> Int
-pCoverage p = 0 --pieceShape p
+pCoverage = sum . map (length . filter (== 'X')) . pShape
+
+rotateR, rotateL :: PShape -> PShape
+rotateR s = s
+rotateL s = s
 
 pWidth, pHeight :: Piece -> Int
 pWidth p = length $ head $ pShape p
 pHeight p = length $ pShape p
 
 p c t r s | let row1:rows = map length s
-            in all (== row1) rows = Piece c t r s
+            in length s > 0 &&
+               all (== row1) rows &&
+               all (`elem` " X") (concat s) = Piece c t r (toShape s)
           | otherwise = error "Piece shape not OK"
+  where toShape s = s
 
 data TrackElem = TrackCell Int | Salary | BonusPiece
   deriving (Show)
