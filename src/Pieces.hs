@@ -1,16 +1,30 @@
 module Pieces where
 
 
-data Piece = Piece { pieceCost :: Int
-                   , pieceTime :: Int
-                   , pieceReward :: Int
-                   , pieceShape :: [String] }
+data Piece = Piece { pCost :: Int
+                   , pTime :: Int
+                   , pReward :: Int
+                   , pShape :: [String] }
   deriving (Show)
 
-pieceCoverage :: Piece -> Int
-pieceCoverage p = 0 --pieceShape p
+pCoverage :: Piece -> Int
+pCoverage p = 0 --pieceShape p
 
-p = Piece
+pWidth, pHeight :: Piece -> Int
+pWidth p = length $ head $ pShape p
+pHeight p = length $ pShape p
+
+p c t r s | let row1:rows = map length s
+            in all (== row1) rows = Piece c t r s
+          | otherwise = error "Piece shape not OK"
+
+data TrackElem = TrackCell Int | Salary | BonusPiece
+  deriving (Show)
+
+track = [t 4, Salary, t 6, Salary, t 6, Salary, t 3, BonusPiece, t 3, Salary, t 3, BonusPiece
+        ,t 3, Salary, t 3, BonusPiece,  t 3, Salary, t 6, Salary, t 3, BonusPiece, t 3, Salary
+        ,t 3, BonusPiece, t 3, Salary]
+  where t = TrackCell
 
 pieces = [
   p 5 4 2
